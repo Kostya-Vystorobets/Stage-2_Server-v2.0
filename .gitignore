@@ -1,6 +1,11 @@
 # compiled output
 /dist
 /node_modules
+/test
+/src/app.controller.spec.ts
+/src/app.controller.ts
+/src/app.module.ts
+/src/app.service.ts
 
 # Logs
 logs
