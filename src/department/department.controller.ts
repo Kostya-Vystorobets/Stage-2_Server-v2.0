@@ -1,26 +1,26 @@
-import { Controller, Delete, Get, Patch, Post } from '@nestjs/common';
-import { DepartmentSevice } from './department.service';
+import { Controller, Delete, Get, Patch, Post } from "@nestjs/common";
+import { DepartmentSevice } from "./department.service";
 
-@Controller('/api/v2/department')
-export class DepartmentControler {
-    constructor(private readonly departmentServise: DepartmentSevice) { }
-    @Get()
-    getAll(): string {
-        return this.departmentServise.getAll();
-    }
-    getById(): string {
-        return this.departmentServise.getById();
-    }
-    @Post()
-    create(): string {
-        return this.departmentServise.create();
-    }
-    @Patch()
-    updeteById(): string {
-        return this.departmentServise.updeteById();
-    }
-    @Delete()
-    deleteById(): string {
-        return this.departmentServise.deleteById();
-    }
+@Controller("/api/v2/department")
+export class DepartmentController {
+  constructor(private readonly departmentServise: DepartmentSevice) {}
+  @Get()
+  async getAll(): Promise<any> {
+    return this.departmentServise.getAll();
+  }
+  async getById(): Promise<any> {
+    return this.departmentServise.getById();
+  }
+  @Post()
+  async create(): Promise<any> {
+    return this.departmentServise.create();
+  }
+  @Patch()
+  async updeteById(): Promise<any> {
+    return this.departmentServise.updeteById();
+  }
+  @Delete()
+  async deleteById(): Promise<any> {
+    return this.departmentServise.deleteById();
+  }
 }

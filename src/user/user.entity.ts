@@ -1,20 +1,35 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BeforeInsert,
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from "typeorm";
+import { hash } from "bcrypt";
 
-@Entity({ name: 'users' })
+@Entity({ name: "users" })
 export class UserEntity {
-    @PrimaryGeneratedColumn()
-    id: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column()
-    userName: string;
+  @Column()
+  userName: string;
 
-    @Column()
-    password: string;
+  @Column({ select: false })
+  password: string;
 
-    @Column()
-    created_at: Date;
+  @CreateDateColumn({ name: "created_at" })
+  createdAt: Date;
 
-    @Column()
-    updated_at: Date;
+  @UpdateDateColumn({ name: "updated_at" })
+  updatedAt: Date;
+
+  @BeforeInsert()
+  async hasPassworld() {
+    this.password = await hash(this.password, 10);
+  }
 }
-
+function CreatedDate() {
+  throw new Error("Function not implemented.");
+}

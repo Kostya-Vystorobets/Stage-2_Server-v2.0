@@ -1,20 +1,25 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from "typeorm";
 
-@Entity({ name: 'departments' })
-export class UserEntity {
-    @PrimaryGeneratedColumn()
-    id: number;
+@Entity({ name: "departments" })
+export class DepartmentEntity {
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column()
-    name: string;
+  @Column()
+  name: string;
 
-    @Column()
-    description: string;
+  @Column()
+  description: string;
 
-    @Column()
-    created_at: Date;
+  @CreateDateColumn({ name: "created_at" })
+  createdAt: Date;
 
-    @Column()
-    updated_at: Date;
+  @UpdateDateColumn({ name: "updated_at" })
+  updatedAt: Date;
 }
-
