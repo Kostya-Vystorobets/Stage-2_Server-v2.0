@@ -30,6 +30,3 @@ export class UserEntity {
     this.password = await hash(this.password, 10);
   }
 }
-function CreatedDate() {
-  throw new Error("Function not implemented.");
-}
