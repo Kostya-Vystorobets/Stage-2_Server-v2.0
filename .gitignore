@@ -1,13 +1,15 @@
 # compiled output
 .env
 config.ts
-database.initializer.ts
+
 
 /auth
 /dist
 /node_modules
 /src/app.service.ts
 /src/ormconfig.ts
+/src/database
+
 
 # Logs
 logs
