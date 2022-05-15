@@ -47,6 +47,7 @@ export class UserController {
   @UsePipes(new ValidationPipe())
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() createUserDto: CreateUserDto): Promise<UserEntity> {
+    console.log(createUserDto);
     return this.userServise.createUser(createUserDto);
   }
 }

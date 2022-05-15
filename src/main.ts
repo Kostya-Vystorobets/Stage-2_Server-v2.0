@@ -16,7 +16,7 @@ async function bootstrap() {
       cookie: { maxAge: EXPIRES_IN },
     })
   );
-  // await seedDatabase();
+  await seedDatabase();
   await app.listen(PORT);
 }
 bootstrap();

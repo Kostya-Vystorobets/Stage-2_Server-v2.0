@@ -8,7 +8,6 @@ config.ts
 /node_modules
 /src/app.service.ts
 /src/ormconfig.ts
-/src/database
 
 
 # Logs
