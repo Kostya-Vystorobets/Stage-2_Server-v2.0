@@ -7,6 +7,8 @@ import {
   ValidationPipe,
   UseGuards,
   Get,
+  HttpCode,
+  HttpStatus,
 } from "@nestjs/common";
 import { CreateUserDto } from "./dto/createUser.dto";
 import { LoginUserDto } from "./dto/login.dto";
@@ -31,7 +33,7 @@ export class UserController {
 
   @Get("logout")
   @UseGuards(AuthGuard)
-  logout(@Session() session: SessionData): Promise<void> {
+  async logout(@Session() session: SessionData): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       session.destroy((error: Error) => {
         if (error) reject(error);
@@ -43,6 +45,7 @@ export class UserController {
   @Post("/")
   @UseGuards(AuthGuard)
   @UsePipes(new ValidationPipe())
+  @HttpCode(HttpStatus.CREATED)
   async create(@Body() createUserDto: CreateUserDto): Promise<UserEntity> {
     return this.userServise.createUser(createUserDto);
   }

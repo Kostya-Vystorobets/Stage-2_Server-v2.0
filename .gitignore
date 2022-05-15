@@ -2,12 +2,14 @@
 
 .env
 config.ts
-database.initializer.ts
+
 
 /dist
 /node_modules
 /src/app.service.ts
 /src/ormconfig.ts
+/src/database
+
 
 # Logs
 logs
