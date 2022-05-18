@@ -1,14 +1,14 @@
 # compiled output
 
 .env
+config.ts
+
+
 /dist
 /node_modules
-/test
-/src/app.controller.spec.ts
-/src/app.controller.ts
-/src/app.module.ts
 /src/app.service.ts
 /src/ormconfig.ts
+
 
 # Logs
 logs
