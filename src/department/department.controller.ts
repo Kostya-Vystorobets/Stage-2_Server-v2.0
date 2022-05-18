@@ -1,26 +1,55 @@
-import { Controller, Delete, Get, Patch, Post } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+  UsePipes,
+  ValidationPipe,
+} from "@nestjs/common";
+import { AuthGuard } from "src/user/guards/auth.guard";
+import { DeleteResult } from "typeorm";
+import { DepartmentEntity } from "./department.entity";
 import { DepartmentSevice } from "./department.service";
+import { CreateDepartmentDto } from "./dto/createDepartment.dto";
+import { UpdateDepartmentDto } from "./dto/updateDepartment.dto";
 
 @Controller("/api/v2/department")
 export class DepartmentController {
   constructor(private readonly departmentServise: DepartmentSevice) {}
   @Get()
-  async getAll(): Promise<any> {
+  @UseGuards(AuthGuard)
+  async getAll(): Promise<DepartmentEntity[]> {
     return this.departmentServise.getAll();
   }
-  async getById(): Promise<any> {
-    return this.departmentServise.getById();
+  @Get(":id")
+  @UseGuards(AuthGuard)
+  async getById(@Param("id") id: number): Promise<DepartmentEntity> {
+    return this.departmentServise.getById(id);
   }
   @Post()
-  async create(): Promise<any> {
-    return this.departmentServise.create();
+  @UseGuards(AuthGuard)
+  @UsePipes(new ValidationPipe())
+  async create(
+    @Body() createDepartmentDto: CreateDepartmentDto
+  ): Promise<DepartmentEntity> {
+    return this.departmentServise.createDepartment(createDepartmentDto);
   }
-  @Patch()
-  async updeteById(): Promise<any> {
-    return this.departmentServise.updeteById();
+  @Patch(":id")
+  @UseGuards(AuthGuard)
+  @UsePipes(new ValidationPipe())
+  async updeteById(
+    @Param("id") id: number,
+    @Body() updateDepartmentDto: UpdateDepartmentDto
+  ): Promise<DepartmentEntity> {
+    return this.departmentServise.updeteById(id, updateDepartmentDto);
   }
-  @Delete()
-  async deleteById(): Promise<any> {
-    return this.departmentServise.deleteById();
+  @Delete(":id")
+  @UseGuards(AuthGuard)
+  async deleteById(@Param("id") id: number): Promise<DeleteResult> {
+    return this.departmentServise.deleteById(id);
   }
 }
