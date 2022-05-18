@@ -1,7 +1,9 @@
+import { CreateDepartmentDto } from "./dto/createDepartment.dto";
 import { DepartmentEntity } from "./department.entity";
-import { Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { DeleteResult, Repository } from "typeorm";
+import { UpdateDepartmentDto } from "./dto/updateDepartment.dto";
 
 @Injectable()
 export class DepartmentSevice {
@@ -9,22 +11,42 @@ export class DepartmentSevice {
     @InjectRepository(DepartmentEntity)
     private readonly departmentRepository: Repository<DepartmentEntity>
   ) {}
-  async findAll(): Promise<DepartmentEntity[]> {
+  async getAll(): Promise<DepartmentEntity[]> {
     return await this.departmentRepository.find();
   }
-  getAll(): string {
-    return "getAll success!";
+  async getById(id: number): Promise<DepartmentEntity> {
+    return await this.departmentRepository.findOne({ id });
   }
-  getById(): string {
-    return "getById success!";
+  async createDepartment(
+    createDepartmentDto: CreateDepartmentDto
+  ): Promise<DepartmentEntity> {
+    const newDepartment: DepartmentEntity = new DepartmentEntity();
+    Object.assign(newDepartment, createDepartmentDto);
+    newDepartment.employees = [];
+    return await this.departmentRepository.save(newDepartment);
   }
-  create(): string {
-    return "create success!";
+  async updeteById(
+    id: number,
+    updateDepartmentDto: UpdateDepartmentDto
+  ): Promise<DepartmentEntity> {
+    const department: DepartmentEntity = await this.getById(id);
+    if (!department) {
+      throw new HttpException(
+        "Department does not exist",
+        HttpStatus.NOT_FOUND
+      );
+    }
+    Object.assign(department, updateDepartmentDto);
+    return await this.departmentRepository.save(department);
   }
-  updeteById(): string {
-    return "updeteById success!";
-  }
-  deleteById(): string {
-    return "deleteById success!";
+  async deleteById(id: number): Promise<DeleteResult> {
+    const department: DepartmentEntity = await this.getById(id);
+    if (!department) {
+      throw new HttpException(
+        "Department does not exist",
+        HttpStatus.NOT_FOUND
+      );
+    }
+    return await this.departmentRepository.delete({ id });
   }
 }

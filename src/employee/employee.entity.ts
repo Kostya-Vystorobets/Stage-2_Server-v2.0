@@ -1,7 +1,9 @@
+import { DepartmentEntity } from "./../department/department.entity";
 import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
@@ -25,4 +27,9 @@ export class EmployeeEntity {
 
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
+
+  @ManyToOne(() => DepartmentEntity, (department) => department.employees, {
+    eager: true,
+  })
+  department: DepartmentEntity;
 }
