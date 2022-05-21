@@ -17,7 +17,7 @@ import { UserSevice } from "./user.service";
 import { Session as SessionData } from "express-session";
 import { AuthGuard } from "./guards/auth.guard";
 
-@Controller("/api/v2/user")
+@Controller("/api/v2/users")
 export class UserController {
   constructor(private readonly userServise: UserSevice) {}
   @Post("/login")

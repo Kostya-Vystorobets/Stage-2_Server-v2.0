@@ -3,6 +3,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -22,14 +23,18 @@ export class EmployeeEntity {
   @Column()
   lastName: string;
 
+  @Column()
+  email: string;
+
   @CreateDateColumn({ name: "created_at" })
   createdAt: Date;
 
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
 
-  @ManyToOne(() => DepartmentEntity, (department) => department.employees, {
-    eager: true,
-  })
+  @ManyToOne(
+    () => DepartmentEntity,
+    (department: DepartmentEntity) => department.employees
+  )
   department: DepartmentEntity;
 }

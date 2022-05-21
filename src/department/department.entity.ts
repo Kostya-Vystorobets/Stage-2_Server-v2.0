@@ -3,6 +3,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -10,11 +11,6 @@ import {
 
 @Entity({ name: "departments" })
 export class DepartmentEntity {
-  getById(
-    departmentId: number
-  ): DepartmentEntity | PromiseLike<DepartmentEntity> {
-    throw new Error("Method not implemented.");
-  }
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -30,6 +26,13 @@ export class DepartmentEntity {
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
 
-  @OneToMany(() => EmployeeEntity, (employee) => employee.department)
+  @OneToMany(
+    () => EmployeeEntity,
+    (employee: EmployeeEntity) => employee.department,
+    {
+      eager: true,
+    }
+  )
+  @JoinColumn({ name: "employees" })
   employees: EmployeeEntity[];
 }

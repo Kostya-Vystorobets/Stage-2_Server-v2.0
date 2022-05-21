@@ -12,4 +12,7 @@ export class CreateEmployeeDto {
 
   @IsNotEmpty()
   readonly lastName: string;
+
+  @IsNotEmpty()
+  department: number;
 }

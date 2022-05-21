@@ -3,7 +3,6 @@ import { DepartmentModule } from "./department/department.module";
 import { UserModule } from "./user/user.module";
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-// import { AuthModule } from "./auth/auth.module";
 import ormconfig from "./ormconfig";
 
 @Module({
@@ -12,7 +11,6 @@ import ormconfig from "./ormconfig";
     UserModule,
     DepartmentModule,
     EmployeeModule,
-    // AuthModule,
   ],
 })
 export class AppModule {}

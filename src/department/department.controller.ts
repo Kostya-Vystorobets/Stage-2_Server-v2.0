@@ -17,7 +17,7 @@ import { DepartmentSevice } from "./department.service";
 import { CreateDepartmentDto } from "./dto/createDepartment.dto";
 import { UpdateDepartmentDto } from "./dto/updateDepartment.dto";
 
-@Controller("/api/v2/department")
+@Controller("/api/v2/departments")
 export class DepartmentController {
   constructor(private readonly departmentServise: DepartmentSevice) {}
   @Get()
