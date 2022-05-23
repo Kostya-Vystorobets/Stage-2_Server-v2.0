@@ -5,6 +5,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { DeleteResult, getRepository, Repository } from "typeorm";
 import { UpdateDepartmentDto } from "./dto/updateDepartment.dto";
 import { DepartmentsResponseInterface } from "./types/departmentsResponse.interface";
+import { DepartmentsOptionInterface } from "./types/departmentsOptions.interface";
 
 @Injectable()
 export class DepartmentSevice {
@@ -12,7 +13,9 @@ export class DepartmentSevice {
     @InjectRepository(DepartmentEntity)
     private readonly departmentRepository: Repository<DepartmentEntity>
   ) {}
-  async getAll(query: any): Promise<DepartmentsResponseInterface> {
+  async getAll(
+    query: DepartmentsOptionInterface
+  ): Promise<DepartmentsResponseInterface> {
     const queryBuilder =
       getRepository(DepartmentEntity).createQueryBuilder("department");
     const departmentsCount = await queryBuilder.getCount();
