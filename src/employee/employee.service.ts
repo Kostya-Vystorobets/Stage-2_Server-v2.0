@@ -30,7 +30,7 @@ export class EmployeeSevice {
     const newEmployee = new EmployeeEntity();
     Object.assign(newEmployee, createEmployeeDto);
     const corentDepartment = await this.departmentRepository.findOne(
-      newEmployee.department
+      newEmployee.departmentId
     );
     if (!corentDepartment) {
       throw new HttpException(
@@ -65,6 +65,7 @@ export class EmployeeSevice {
   ): Promise<EmployeeEntity> {
     const employee = await this.getById(id);
     Object.assign(employee, updateEmployeeDto);
+
     const сheckEmail = await this.employeeRepository.findOne({
       email: employee.email,
     });

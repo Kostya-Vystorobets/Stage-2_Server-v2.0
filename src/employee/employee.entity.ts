@@ -3,7 +3,6 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -36,5 +35,5 @@ export class EmployeeEntity {
     () => DepartmentEntity,
     (department: DepartmentEntity) => department.employees
   )
-  department: DepartmentEntity;
+  departmentId: DepartmentEntity;
 }

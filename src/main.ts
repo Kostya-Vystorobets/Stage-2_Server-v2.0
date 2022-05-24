@@ -1,22 +1,23 @@
 import { NestFactory } from "@nestjs/core";
-import * as session from "express-session";
 import { AppModule } from "./app.module";
-import { EXPIRES_IN, SECRET_KEY } from "./config";
 import seedDatabase from "./database/seed.database";
-
-const PORT = process.env.PORT || 3000;
+import { ConfigService } from "@nestjs/config";
+import * as session from "express-session";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
+  const configService = app.get(ConfigService);
   app.use(
     session({
-      secret: SECRET_KEY,
+      secret: configService.get<string>("session.secret"),
       resave: false,
       saveUninitialized: false,
-      cookie: { maxAge: EXPIRES_IN },
+      cookie: {
+        maxAge: configService.get<number>("session.max-age"),
+      },
     })
   );
   await seedDatabase();
-  await app.listen(PORT);
+  await app.listen(configService.get<string>("port"));
 }
 bootstrap();
