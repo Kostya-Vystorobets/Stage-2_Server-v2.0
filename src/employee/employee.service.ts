@@ -9,9 +9,7 @@ import { DepartmentEntity } from "src/department/department.entity";
 export class EmployeeSevice {
   constructor(
     @InjectRepository(EmployeeEntity)
-    private readonly employeeRepository: Repository<EmployeeEntity>,
-    @InjectRepository(DepartmentEntity)
-    private readonly departmentRepository: Repository<DepartmentEntity>
+    private readonly employeeRepository: Repository<EmployeeEntity>
   ) {}
   async getById(id: number): Promise<EmployeeEntity> {
     const employee = await this.employeeRepository.findOne({ id });
@@ -25,19 +23,11 @@ export class EmployeeSevice {
   }
 
   async createEmployee(
+    currentDepartment: DepartmentEntity,
     createEmployeeDto: CreateEmployeeDto
   ): Promise<EmployeeEntity> {
     const newEmployee = new EmployeeEntity();
     Object.assign(newEmployee, createEmployeeDto);
-    const corentDepartment = await this.departmentRepository.findOne(
-      newEmployee.departmentId
-    );
-    if (!corentDepartment) {
-      throw new HttpException(
-        "The department with this ID was not found.",
-        HttpStatus.NOT_FOUND
-      );
-    }
     const сheckEmail = await this.employeeRepository.findOne({
       email: newEmployee.email,
     });
@@ -56,6 +46,7 @@ export class EmployeeSevice {
         HttpStatus.BAD_REQUEST
       );
     }
+    newEmployee.department = currentDepartment;
     return await this.employeeRepository.save(newEmployee);
   }
 

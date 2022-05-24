@@ -1,3 +1,4 @@
+import { DepartmentEntity } from "src/department/department.entity";
 import { IsNotEmpty } from "class-validator";
 
 export class CreateEmployeeDto {
@@ -13,6 +14,5 @@ export class CreateEmployeeDto {
   @IsNotEmpty()
   readonly lastName: string;
 
-  @IsNotEmpty()
-  department: number;
+  department: DepartmentEntity;
 }

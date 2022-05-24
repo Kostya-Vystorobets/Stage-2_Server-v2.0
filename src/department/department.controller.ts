@@ -1,3 +1,4 @@
+import { EmployeeSevice } from "./../employee/employee.service";
 import {
   Body,
   Controller,
@@ -11,6 +12,7 @@ import {
   UsePipes,
   ValidationPipe,
 } from "@nestjs/common";
+import { CreateEmployeeDto } from "src/employee/dto/createEmployee.dto";
 import { AuthGuard } from "src/user/guards/auth.guard";
 import { DeleteResult } from "typeorm";
 import { DepartmentEntity } from "./department.entity";
@@ -19,10 +21,14 @@ import { CreateDepartmentDto } from "./dto/createDepartment.dto";
 import { UpdateDepartmentDto } from "./dto/updateDepartment.dto";
 import { DepartmentsOptionInterface } from "./types/departmentsOptions.interface";
 import { DepartmentsResponseInterface } from "./types/departmentsResponse.interface";
+import { EmployeeEntity } from "src/employee/employee.entity";
 
 @Controller("/api/v2/departments")
 export class DepartmentController {
-  constructor(private readonly departmentServise: DepartmentSevice) {}
+  constructor(
+    private readonly departmentServise: DepartmentSevice,
+    private readonly employeeSevice: EmployeeSevice
+  ) {}
   @Get()
   @UseGuards(AuthGuard)
   async getAll(
@@ -42,6 +48,19 @@ export class DepartmentController {
     @Body() createDepartmentDto: CreateDepartmentDto
   ): Promise<DepartmentEntity> {
     return this.departmentServise.createDepartment(createDepartmentDto);
+  }
+  @Post(":id/employees")
+  @UseGuards(AuthGuard)
+  @UsePipes(new ValidationPipe())
+  async createUserInDepartment(
+    @Param("id") id: number,
+    @Body() createEmployeeDto: CreateEmployeeDto
+  ): Promise<EmployeeEntity> {
+    const currentDepartment = await this.departmentServise.getById(id);
+    return this.employeeSevice.createEmployee(
+      currentDepartment,
+      createEmployeeDto
+    );
   }
   @Patch(":id")
   @UseGuards(AuthGuard)

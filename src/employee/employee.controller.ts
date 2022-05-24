@@ -24,14 +24,6 @@ export class EmployeeController {
   async getById(@Param("id") id: number): Promise<EmployeeEntity> {
     return this.employeeServise.getById(id);
   }
-  @Post()
-  @UseGuards(AuthGuard)
-  @UsePipes(new ValidationPipe())
-  async create(
-    @Body() createEmployeeDto: CreateEmployeeDto
-  ): Promise<EmployeeEntity> {
-    return await this.employeeServise.createEmployee(createEmployeeDto);
-  }
   @Patch(":id")
   @UseGuards(AuthGuard)
   @UsePipes(new ValidationPipe())

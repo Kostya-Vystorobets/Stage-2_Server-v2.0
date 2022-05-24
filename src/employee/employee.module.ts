@@ -3,10 +3,9 @@ import { EmployeeSevice } from "./employee.service";
 import { EmployeeController } from "./employee.controller";
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { DepartmentEntity } from "src/department/department.entity";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([EmployeeEntity, DepartmentEntity])],
+  imports: [TypeOrmModule.forFeature([EmployeeEntity])],
   controllers: [EmployeeController],
   providers: [EmployeeSevice],
 })

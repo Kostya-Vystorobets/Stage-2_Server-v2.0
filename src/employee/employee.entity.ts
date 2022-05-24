@@ -35,5 +35,5 @@ export class EmployeeEntity {
     () => DepartmentEntity,
     (department: DepartmentEntity) => department.employees
   )
-  departmentId: DepartmentEntity;
+  department: DepartmentEntity;
 }
