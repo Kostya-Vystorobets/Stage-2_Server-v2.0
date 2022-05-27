@@ -7,7 +7,6 @@ import {
   Get,
   Param,
   Patch,
-  Post,
   UseGuards,
   UsePipes,
   ValidationPipe,

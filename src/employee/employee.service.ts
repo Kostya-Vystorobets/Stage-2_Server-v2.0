@@ -4,12 +4,14 @@ import { EmployeeEntity } from "./employee.entity";
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DeleteResult, Repository } from "typeorm";
-import { DepartmentEntity } from "src/department/department.entity";
+import { DepartmentSevice } from "src/department/department.service";
+
 @Injectable()
 export class EmployeeSevice {
   constructor(
     @InjectRepository(EmployeeEntity)
-    private readonly employeeRepository: Repository<EmployeeEntity>
+    private readonly employeeRepository: Repository<EmployeeEntity>,
+    private readonly departmentServise: DepartmentSevice
   ) {}
   async getById(id: number): Promise<EmployeeEntity> {
     const employee = await this.employeeRepository.findOne({ id });
@@ -22,12 +24,13 @@ export class EmployeeSevice {
     return employee;
   }
 
-  async createEmployee(
-    currentDepartment: DepartmentEntity,
+  async createEmployeeInDepartment(
+    id: number,
     createEmployeeDto: CreateEmployeeDto
   ): Promise<EmployeeEntity> {
     const newEmployee = new EmployeeEntity();
     Object.assign(newEmployee, createEmployeeDto);
+    const currentDepartment = await this.departmentServise.getById(id);
     const сheckEmail = await this.employeeRepository.findOne({
       email: newEmployee.email,
     });

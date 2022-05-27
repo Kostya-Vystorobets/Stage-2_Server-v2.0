@@ -4,6 +4,7 @@ import {
   Controller,
   Delete,
   Get,
+  Logger,
   Param,
   Patch,
   Post,
@@ -52,13 +53,12 @@ export class DepartmentController {
   @Post(":id/employees")
   @UseGuards(AuthGuard)
   @UsePipes(new ValidationPipe())
-  async createUserInDepartment(
+  async createEmployeeInDepartment(
     @Param("id") id: number,
     @Body() createEmployeeDto: CreateEmployeeDto
   ): Promise<EmployeeEntity> {
-    const currentDepartment = await this.departmentServise.getById(id);
-    return this.employeeSevice.createEmployee(
-      currentDepartment,
+    return this.employeeSevice.createEmployeeInDepartment(
+      id,
       createEmployeeDto
     );
   }

@@ -69,7 +69,7 @@ export class DepartmentSevice {
   }
   async deleteById(id: number): Promise<DeleteResult> {
     const department = await this.getById(id);
-
+    console.log(department);
     if (department.employees.length !== 0) {
       throw new HttpException(
         "Unable to delete a department. The department contains employees.",
