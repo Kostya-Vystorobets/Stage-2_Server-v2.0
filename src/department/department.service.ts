@@ -1,3 +1,4 @@
+import { EmployeeSevice } from "./../employee/employee.service";
 import { CreateDepartmentDto } from "./dto/createDepartment.dto";
 import { DepartmentEntity } from "./department.entity";
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
@@ -6,12 +7,14 @@ import { DeleteResult, getRepository, Repository } from "typeorm";
 import { UpdateDepartmentDto } from "./dto/updateDepartment.dto";
 import { DepartmentsResponseInterface } from "./types/departmentsResponse.interface";
 import { DepartmentsOptionInterface } from "./types/departmentsOptions.interface";
+import { CreateEmployeeDto } from "src/employee/dto/createEmployee.dto";
 
 @Injectable()
 export class DepartmentSevice {
   constructor(
     @InjectRepository(DepartmentEntity)
-    private readonly departmentRepository: Repository<DepartmentEntity>
+    private readonly departmentRepository: Repository<DepartmentEntity>,
+    private readonly employeeSevice: EmployeeSevice
   ) {}
   async getAll(
     query: DepartmentsOptionInterface
@@ -59,6 +62,20 @@ export class DepartmentSevice {
     }
     return await this.departmentRepository.save(newDepartment);
   }
+
+  async createEmployeeInDepartment(
+    id: number,
+    createEmployeeDto: CreateEmployeeDto
+  ): Promise<any> {
+    const currentDepartment = await this.getById(id);
+    const newEmployee = await this.employeeSevice.createEmployee(
+      createEmployeeDto
+    );
+    currentDepartment.employees.push(newEmployee);
+    await this.departmentRepository.save(currentDepartment);
+    return newEmployee;
+  }
+
   async updeteById(
     id: number,
     updateDepartmentDto: UpdateDepartmentDto
@@ -69,7 +86,6 @@ export class DepartmentSevice {
   }
   async deleteById(id: number): Promise<DeleteResult> {
     const department = await this.getById(id);
-    console.log(department);
     if (department.employees.length !== 0) {
       throw new HttpException(
         "Unable to delete a department. The department contains employees.",

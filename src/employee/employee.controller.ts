@@ -1,5 +1,4 @@
 import { UpdateEmployeeDto } from "./dto/updateEmployee.dto";
-import { CreateEmployeeDto } from "./dto/createEmployee.dto";
 import {
   Body,
   Controller,

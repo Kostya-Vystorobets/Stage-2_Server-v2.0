@@ -3,7 +3,6 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -34,12 +33,7 @@ export class EmployeeEntity {
 
   @ManyToOne(
     () => DepartmentEntity,
-    (department: DepartmentEntity) => department.employees,
-    {
-      nullable: false,
-      onDelete: "RESTRICT",
-    }
+    (department: DepartmentEntity) => department.employees
   )
-  @JoinColumn({ name: "departmentId" })
   department: DepartmentEntity;
 }

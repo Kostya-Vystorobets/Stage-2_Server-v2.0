@@ -1,10 +1,8 @@
-import { EmployeeSevice } from "./../employee/employee.service";
 import {
   Body,
   Controller,
   Delete,
   Get,
-  Logger,
   Param,
   Patch,
   Post,
@@ -26,10 +24,7 @@ import { EmployeeEntity } from "src/employee/employee.entity";
 
 @Controller("/api/v2/departments")
 export class DepartmentController {
-  constructor(
-    private readonly departmentServise: DepartmentSevice,
-    private readonly employeeSevice: EmployeeSevice
-  ) {}
+  constructor(private readonly departmentServise: DepartmentSevice) {}
   @Get()
   @UseGuards(AuthGuard)
   async getAll(
@@ -57,7 +52,7 @@ export class DepartmentController {
     @Param("id") id: number,
     @Body() createEmployeeDto: CreateEmployeeDto
   ): Promise<EmployeeEntity> {
-    return this.employeeSevice.createEmployeeInDepartment(
+    return this.departmentServise.createEmployeeInDepartment(
       id,
       createEmployeeDto
     );

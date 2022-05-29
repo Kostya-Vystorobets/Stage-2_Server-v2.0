@@ -29,7 +29,11 @@ export class DepartmentEntity {
   @OneToMany(
     () => EmployeeEntity,
     (employee: EmployeeEntity) => employee.department,
-    { eager: true }
+    {
+      eager: true,
+      cascade: true,
+    }
   )
+  @JoinColumn({ name: "employees" })
   employees: EmployeeEntity[];
 }
