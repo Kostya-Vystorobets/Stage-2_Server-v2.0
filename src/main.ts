@@ -3,6 +3,7 @@ import { AppModule } from "./app.module";
 import seedDatabase from "./database/seed.database";
 import { ConfigService } from "@nestjs/config";
 import * as session from "express-session";
+import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
@@ -17,6 +18,18 @@ async function bootstrap() {
       },
     })
   );
+
+  const configSwagger = new DocumentBuilder()
+    .setTitle("Corporation")
+    .setDescription(
+      "This is the Training Server of the IT Academy. Management of departments and employees."
+    )
+    .setVersion("2.0")
+    .addCookieAuth()
+    .build();
+  const document = SwaggerModule.createDocument(app, configSwagger);
+  SwaggerModule.setup("api/v2", app, document);
+
   await seedDatabase();
   await app.listen(configService.get<string>("port"));
 }
