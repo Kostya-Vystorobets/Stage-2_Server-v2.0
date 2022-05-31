@@ -3,16 +3,20 @@ import { DepartmentModule } from "./department/department.module";
 import { UserModule } from "./user/user.module";
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-// import { AuthModule } from "./auth/auth.module";
 import ormconfig from "./ormconfig";
+import { ConfigModule } from "@nestjs/config";
+import configuration from "./configuration";
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [configuration],
+    }),
     TypeOrmModule.forRoot(ormconfig),
     UserModule,
     DepartmentModule,
     EmployeeModule,
-    // AuthModule,
   ],
 })
 export class AppModule {}

@@ -12,18 +12,39 @@ export class EmployeeSevice {
     private readonly employeeRepository: Repository<EmployeeEntity>
   ) {}
   async getById(id: number): Promise<EmployeeEntity> {
-    return await this.employeeRepository.findOne({ id });
+    const employee = await this.employeeRepository.findOne({ id });
+    if (!employee) {
+      throw new HttpException(
+        "The Employee with this ID was not found.",
+        HttpStatus.NOT_FOUND
+      );
+    }
+    return employee;
   }
 
   async createEmployee(
-    departmentId: number,
     createEmployeeDto: CreateEmployeeDto
   ): Promise<EmployeeEntity> {
-    const corentDepartment: DepartmentEntity =
-      this.departmentServise.getById(departmentId);
     const newEmployee = new EmployeeEntity();
     Object.assign(newEmployee, createEmployeeDto);
-    newEmployee.department = corentDepartment;
+    const сheckEmail = await this.employeeRepository.findOne({
+      email: newEmployee.email,
+    });
+    if (сheckEmail) {
+      throw new HttpException(
+        "The employee with this Email already exists.",
+        HttpStatus.BAD_REQUEST
+      );
+    }
+    const сheckUserName = await this.employeeRepository.findOne({
+      userName: newEmployee.userName,
+    });
+    if (сheckUserName) {
+      throw new HttpException(
+        "The employee with this User Name already exists.",
+        HttpStatus.BAD_REQUEST
+      );
+    }
     return await this.employeeRepository.save(newEmployee);
   }
 
@@ -32,17 +53,22 @@ export class EmployeeSevice {
     updateEmployeeDto: UpdateEmployeeDto
   ): Promise<EmployeeEntity> {
     const employee = await this.getById(id);
-    if (!employee) {
-      throw new HttpException("Employee does not exist", HttpStatus.NOT_FOUND);
-    }
     Object.assign(employee, updateEmployeeDto);
+
+    const сheckEmail = await this.employeeRepository.findOne({
+      email: employee.email,
+    });
+    if (сheckEmail) {
+      throw new HttpException(
+        "The employee with this Email already exists.",
+        HttpStatus.BAD_REQUEST
+      );
+    }
     return await this.employeeRepository.save(employee);
   }
+
   async deleteById(id: number): Promise<DeleteResult> {
-    const employee = await this.getById(id);
-    if (!employee) {
-      throw new HttpException("Employee does not exist", HttpStatus.NOT_FOUND);
-    }
+    await this.getById(id);
     return await this.employeeRepository.delete({ id });
   }
 }

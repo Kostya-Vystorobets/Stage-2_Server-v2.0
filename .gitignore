@@ -1,7 +1,8 @@
 # compiled output
 
 .env
-config.ts
+config.yaml
+ormconfig.ts
 
 
 /dist
