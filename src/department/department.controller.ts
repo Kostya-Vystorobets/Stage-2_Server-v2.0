@@ -39,8 +39,11 @@ export class DepartmentController {
   @Get()
   @ApiOperation({ summary: "Get all department" })
   @ApiCookieAuth()
+  @ApiOkResponse({ type: DepartmentEntity })
   @ApiUnauthorizedResponse({ description: "Not authorized" })
-  @ApiBadRequestResponse()
+  @ApiNotFoundResponse({
+    description: "The department with this ID was not found.",
+  })
   @UseGuards(AuthGuard)
   async getAll(
     @Query() query: DepartmentsOptionInterface
@@ -51,8 +54,10 @@ export class DepartmentController {
   @ApiOperation({ summary: "Get department by id" })
   @ApiCookieAuth()
   @ApiUnauthorizedResponse({ description: "Not authorized" })
-  @ApiBadRequestResponse()
   @ApiOkResponse({ type: DepartmentEntity })
+  @ApiNotFoundResponse({
+    description: "The department with this ID was not found.",
+  })
   @UseGuards(AuthGuard)
   async getById(@Param("id") id: number): Promise<DepartmentEntity> {
     return this.departmentServise.getById(id);
@@ -60,9 +65,11 @@ export class DepartmentController {
   @Post()
   @ApiOperation({ summary: "Create department" })
   @ApiCookieAuth()
-  @ApiUnauthorizedResponse({ description: "Not authorized" })
-  @ApiBadRequestResponse()
   @ApiOkResponse({ type: DepartmentEntity })
+  @ApiUnauthorizedResponse({ description: "Not authorized" })
+  @ApiBadRequestResponse({
+    description: "The department with this Name already exists.",
+  })
   @UseGuards(AuthGuard)
   @UsePipes(new ValidationPipe())
   async create(
@@ -73,10 +80,12 @@ export class DepartmentController {
   @Post(":id/employees")
   @ApiOperation({ summary: "Create employee in department by id" })
   @ApiCookieAuth()
-  @ApiUnauthorizedResponse({ description: "Not authorized" })
-  @ApiOkResponse({ type: EmployeeEntity })
-  @ApiBadRequestResponse()
   @ApiBody({ type: CreateEmployeeDto })
+  @ApiOkResponse({ type: EmployeeEntity })
+  @ApiUnauthorizedResponse({ description: "Not authorized" })
+  @ApiBadRequestResponse({
+    description: "The department with this ID was not found.",
+  })
   @UseGuards(AuthGuard)
   @UsePipes(new ValidationPipe())
   async createEmployeeInDepartment(
@@ -91,12 +100,11 @@ export class DepartmentController {
   @Patch(":id")
   @ApiOperation({ summary: "Change department by id" })
   @ApiCookieAuth()
+  @ApiOkResponse({ type: DepartmentEntity })
   @ApiUnauthorizedResponse({ description: "Not authorized" })
-  @ApiBadRequestResponse({ description: "Bad Request" })
   @ApiNotFoundResponse({
     description: "The department with this ID was not found.",
   })
-  @ApiOkResponse({ type: DepartmentEntity })
   @UseGuards(AuthGuard)
   @UsePipes(new ValidationPipe())
   async updeteById(
@@ -108,6 +116,7 @@ export class DepartmentController {
   @Delete(":id")
   @ApiOperation({ summary: "Delete department by id" })
   @ApiCookieAuth()
+  @ApiOkResponse({ description: "OK" })
   @ApiUnauthorizedResponse({ description: "Not authorized" })
   @ApiNotFoundResponse({
     description:
@@ -116,7 +125,6 @@ export class DepartmentController {
   @ApiNotFoundResponse({
     description: "The department with this ID was not found.",
   })
-  @ApiBadRequestResponse()
   @UseGuards(AuthGuard)
   async deleteById(@Param("id") id: number): Promise<DeleteResult> {
     return this.departmentServise.deleteById(id);

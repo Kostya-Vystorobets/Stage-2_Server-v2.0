@@ -25,7 +25,6 @@ async function bootstrap() {
       "This is the Training Server of the IT Academy. Management of departments and employees."
     )
     .setVersion("2.0")
-    .addCookieAuth()
     .build();
   const document = SwaggerModule.createDocument(app, configSwagger);
   SwaggerModule.setup("api/v2", app, document);

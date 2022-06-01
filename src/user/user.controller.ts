@@ -20,6 +20,7 @@ import {
   ApiBadRequestResponse,
   ApiBody,
   ApiCookieAuth,
+  ApiOkResponse,
   ApiOperation,
   ApiResponse,
   ApiTags,
@@ -52,6 +53,7 @@ export class UserController {
   @Get("logout")
   @ApiOperation({ summary: "Logging out of the system" })
   @ApiCookieAuth()
+  @ApiOkResponse({ description: "OK" })
   @ApiUnauthorizedResponse({ description: "Not authorized" })
   @UseGuards(AuthGuard)
   async logout(@Session() session: SessionData): Promise<void> {
@@ -66,6 +68,12 @@ export class UserController {
   @Post("/")
   @ApiOperation({ summary: "Create user" })
   @ApiCookieAuth()
+  @ApiBody({ type: LoginUserDto })
+  @ApiResponse({
+    status: 201,
+    description: "User Login",
+    type: UserEntity,
+  })
   @ApiUnauthorizedResponse({ description: "Not authorized" })
   @ApiBadRequestResponse()
   @UseGuards(AuthGuard)

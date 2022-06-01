@@ -36,11 +36,10 @@ export class DepartmentEntity {
     () => EmployeeEntity,
     (employee: EmployeeEntity) => employee.department,
     {
-      eager: true,
       cascade: true,
     }
   )
   @JoinColumn({ name: "employees" })
   @ApiProperty()
-  employees: EmployeeEntity[];
+  employees: Promise<EmployeeEntity[]>;
 }

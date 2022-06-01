@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty } from "class-validator";
+import { EmployeeEntity } from "src/employee/employee.entity";
 
 export class CreateDepartmentDto {
   @IsNotEmpty()
@@ -10,5 +11,5 @@ export class CreateDepartmentDto {
   @ApiProperty({ example: "Responsible for the management of the company" })
   readonly description: string;
 
-  readonly employees?: string[];
+  readonly employees: Promise<EmployeeEntity[]>;
 }
