@@ -3,7 +3,7 @@ import { UserEntity } from "src/user/user.entity";
 import { EntityManager, getConnection } from "typeorm";
 
 export default async function seedDatabese(): Promise<void> {
-  return getConnection().transaction(async (entityManager: EntityManager) => {
+  getConnection().transaction(async (entityManager: EntityManager) => {
     const userCount = await entityManager.count(UserEntity);
     if (!userCount) {
       const userName = "Admin";

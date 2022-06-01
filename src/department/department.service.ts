@@ -1,49 +1,94 @@
+import { EmployeeSevice } from "./../employee/employee.service";
 import { CreateDepartmentDto } from "./dto/createDepartment.dto";
 import { DepartmentEntity } from "./department.entity";
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { DeleteResult, Repository } from "typeorm";
+import { DeleteResult, getRepository, Repository } from "typeorm";
 import { UpdateDepartmentDto } from "./dto/updateDepartment.dto";
+import { DepartmentsResponseInterface } from "./types/departmentsResponse.interface";
+import { DepartmentsOptionInterface } from "./types/departmentsOptions.interface";
+import { CreateEmployeeDto } from "src/employee/dto/createEmployee.dto";
 
 @Injectable()
 export class DepartmentSevice {
   constructor(
     @InjectRepository(DepartmentEntity)
-    private readonly departmentRepository: Repository<DepartmentEntity>
+    private readonly departmentRepository: Repository<DepartmentEntity>,
+    private readonly employeeSevice: EmployeeSevice
   ) {}
-  async getAll(): Promise<DepartmentEntity[]> {
-    return await this.departmentRepository.find();
+  async getAll(
+    query: DepartmentsOptionInterface
+  ): Promise<DepartmentsResponseInterface> {
+    const queryBuilder =
+      getRepository(DepartmentEntity).createQueryBuilder("department");
+    const departmentsCount = await queryBuilder.getCount();
+    queryBuilder.orderBy("department.name", "ASC");
+    if (query.name) {
+      queryBuilder.andWhere("department.name = :name", { name: query.name });
+    }
+    if (query.limit) {
+      queryBuilder.limit(query.limit);
+    }
+    if (query.offset) {
+      queryBuilder.offset(query.offset);
+    }
+    const departments = await queryBuilder.getMany();
+    return { count: departmentsCount, data: departments };
   }
   async getById(id: number): Promise<DepartmentEntity> {
-    return await this.departmentRepository.findOne({ id });
+    const department = await this.departmentRepository.findOne({ id });
+    if (!department) {
+      throw new HttpException(
+        "The department with this ID was not found.",
+        HttpStatus.NOT_FOUND
+      );
+    }
+    return department;
   }
   async createDepartment(
     createDepartmentDto: CreateDepartmentDto
   ): Promise<DepartmentEntity> {
-    const newDepartment: DepartmentEntity = new DepartmentEntity();
+    const newDepartment = new DepartmentEntity();
     Object.assign(newDepartment, createDepartmentDto);
     newDepartment.employees = [];
+    const сheckName = await this.departmentRepository.findOne({
+      name: newDepartment.name,
+    });
+    if (сheckName) {
+      throw new HttpException(
+        "The department with this Name already exists.",
+        HttpStatus.BAD_REQUEST
+      );
+    }
     return await this.departmentRepository.save(newDepartment);
   }
+
+  async createEmployeeInDepartment(
+    id: number,
+    createEmployeeDto: CreateEmployeeDto
+  ): Promise<any> {
+    const currentDepartment = await this.getById(id);
+    const newEmployee = await this.employeeSevice.createEmployee(
+      createEmployeeDto
+    );
+    currentDepartment.employees.push(newEmployee);
+    await this.departmentRepository.save(currentDepartment);
+    return newEmployee;
+  }
+
   async updeteById(
     id: number,
     updateDepartmentDto: UpdateDepartmentDto
   ): Promise<DepartmentEntity> {
-    const department: DepartmentEntity = await this.getById(id);
-    if (!department) {
-      throw new HttpException(
-        "Department does not exist",
-        HttpStatus.NOT_FOUND
-      );
-    }
+    const department = await this.getById(id);
     Object.assign(department, updateDepartmentDto);
     return await this.departmentRepository.save(department);
   }
   async deleteById(id: number): Promise<DeleteResult> {
-    const department: DepartmentEntity = await this.getById(id);
-    if (!department) {
+    const department = await this.getById(id);
+    if (department.employees.length !== 0) {
       throw new HttpException(
-        "Department does not exist",
+        "Unable to delete a department. The department contains employees.",
         HttpStatus.NOT_FOUND
       );
     }

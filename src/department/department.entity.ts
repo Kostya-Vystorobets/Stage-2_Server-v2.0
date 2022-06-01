@@ -1,8 +1,10 @@
+import { ApiProperty } from "@nestjs/swagger";
 import { EmployeeEntity } from "src/employee/employee.entity";
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -10,26 +12,35 @@ import {
 
 @Entity({ name: "departments" })
 export class DepartmentEntity {
-  getById(
-    departmentId: number
-  ): DepartmentEntity | PromiseLike<DepartmentEntity> {
-    throw new Error("Method not implemented.");
-  }
+  @ApiProperty({ example: "87532" })
   @PrimaryGeneratedColumn()
   id: number;
 
+  @ApiProperty({ example: "General Management" })
   @Column()
   name: string;
 
+  @ApiProperty({ example: "Responsible for the management of the company" })
   @Column()
   description: string;
 
+  @ApiProperty()
   @CreateDateColumn({ name: "created_at" })
   createdAt: Date;
 
+  @ApiProperty()
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
 
-  @OneToMany(() => EmployeeEntity, (employee) => employee.department)
+  @OneToMany(
+    () => EmployeeEntity,
+    (employee: EmployeeEntity) => employee.department,
+    {
+      eager: true,
+      cascade: true,
+    }
+  )
+  @JoinColumn({ name: "employees" })
+  @ApiProperty()
   employees: EmployeeEntity[];
 }
