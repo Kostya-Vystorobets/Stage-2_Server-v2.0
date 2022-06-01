@@ -4,7 +4,7 @@ config.yaml
 ormconfig.ts
 
 
-/auth
+/src/employee/decorators
 /dist
 /node_modules
 /src/app.service.ts

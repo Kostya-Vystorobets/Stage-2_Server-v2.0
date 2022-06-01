@@ -8,6 +8,7 @@ import { UpdateDepartmentDto } from "./dto/updateDepartment.dto";
 import { DepartmentsResponseInterface } from "./types/departmentsResponse.interface";
 import { DepartmentsOptionInterface } from "./types/departmentsOptions.interface";
 import { CreateEmployeeDto } from "src/employee/dto/createEmployee.dto";
+import { EmployeeEntity } from "src/employee/employee.entity";
 
 @Injectable()
 export class DepartmentSevice {
@@ -43,6 +44,7 @@ export class DepartmentSevice {
         HttpStatus.NOT_FOUND
       );
     }
+    await department.employees;
     return department;
   }
   async createDepartment(
@@ -50,7 +52,6 @@ export class DepartmentSevice {
   ): Promise<DepartmentEntity> {
     const newDepartment = new DepartmentEntity();
     Object.assign(newDepartment, createDepartmentDto);
-    newDepartment.employees = [];
     const сheckName = await this.departmentRepository.findOne({
       name: newDepartment.name,
     });
@@ -66,12 +67,12 @@ export class DepartmentSevice {
   async createEmployeeInDepartment(
     id: number,
     createEmployeeDto: CreateEmployeeDto
-  ): Promise<any> {
+  ): Promise<EmployeeEntity> {
     const currentDepartment = await this.getById(id);
     const newEmployee = await this.employeeSevice.createEmployee(
       createEmployeeDto
     );
-    currentDepartment.employees.push(newEmployee);
+    (await currentDepartment.employees).push(newEmployee);
     await this.departmentRepository.save(currentDepartment);
     return newEmployee;
   }
@@ -86,7 +87,7 @@ export class DepartmentSevice {
   }
   async deleteById(id: number): Promise<DeleteResult> {
     const department = await this.getById(id);
-    if (department.employees.length !== 0) {
+    if ((await department.employees).length !== 0) {
       throw new HttpException(
         "Unable to delete a department. The department contains employees.",
         HttpStatus.NOT_FOUND
