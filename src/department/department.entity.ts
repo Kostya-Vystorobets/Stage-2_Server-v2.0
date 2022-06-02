@@ -36,7 +36,8 @@ export class DepartmentEntity {
     () => EmployeeEntity,
     (employee: EmployeeEntity) => employee.department,
     {
-      cascade: true,
+      nullable: false,
+      onDelete: "RESTRICT",
     }
   )
   @JoinColumn({ name: "employees" })

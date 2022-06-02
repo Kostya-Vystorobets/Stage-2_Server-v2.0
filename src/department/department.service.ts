@@ -86,13 +86,10 @@ export class DepartmentSevice {
     return await this.departmentRepository.save(department);
   }
   async deleteById(id: number): Promise<DeleteResult> {
-    const department = await this.getById(id);
-    if ((await department.employees).length !== 0) {
-      throw new HttpException(
-        "Unable to delete a department. The department contains employees.",
-        HttpStatus.NOT_FOUND
-      );
+    try {
+      return await this.departmentRepository.delete({ id });
+    } catch (error) {
+      throw new HttpException(`${error.detail}`, HttpStatus.NOT_FOUND);
     }
-    return await this.departmentRepository.delete({ id });
   }
 }
