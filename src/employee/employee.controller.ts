@@ -1,3 +1,5 @@
+import { CreateEmployeeDto } from "./dto/createEmployee.dto";
+import { ApiEmployeeResponse } from "./decorators/ApiEmployeeResponse.decorator";
 import { UpdateEmployeeDto } from "./dto/updateEmployee.dto";
 import {
   Body,
@@ -17,6 +19,7 @@ import {
   ApiBadRequestResponse,
   ApiBody,
   ApiCookieAuth,
+  ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
@@ -30,9 +33,11 @@ export class EmployeeController {
   @Get(":id")
   @ApiOperation({ summary: "Get employee by id" })
   @ApiCookieAuth()
-  @ApiUnauthorizedResponse({ description: "Not authorized" })
-  @ApiBadRequestResponse()
   @ApiOkResponse({ type: EmployeeEntity })
+  @ApiUnauthorizedResponse({ description: "Not authorized" })
+  @ApiNotFoundResponse({
+    description: "The Employee with this ID was not found.",
+  })
   @UseGuards(AuthGuard)
   async getById(@Param("id") id: number): Promise<EmployeeEntity> {
     return this.employeeServise.getById(id);
@@ -40,10 +45,13 @@ export class EmployeeController {
   @Patch(":id")
   @ApiOperation({ summary: "Change employee by id" })
   @ApiCookieAuth()
-  @ApiUnauthorizedResponse({ description: "Not authorized" })
-  @ApiBadRequestResponse()
   @ApiBody({ type: UpdateEmployeeDto })
   @ApiOkResponse({ type: EmployeeEntity })
+  // @ApiEmployeeResponse(CreateEmployeeDto)
+  @ApiUnauthorizedResponse({ description: "Not authorized" })
+  @ApiBadRequestResponse({
+    description: "The employee with this Email already exists.",
+  })
   @UseGuards(AuthGuard)
   @UsePipes(new ValidationPipe())
   async updeteById(
@@ -55,8 +63,11 @@ export class EmployeeController {
   @Delete(":id")
   @ApiOperation({ summary: "Delete employee by id" })
   @ApiCookieAuth()
+  @ApiOkResponse({ description: "OK" })
   @ApiUnauthorizedResponse({ description: "Not authorized" })
-  @ApiBadRequestResponse()
+  @ApiNotFoundResponse({
+    description: "The Employee with this ID was not found.",
+  })
   @UseGuards(AuthGuard)
   async deleteById(@Param("id") id: number) {
     return this.employeeServise.deleteById(id);

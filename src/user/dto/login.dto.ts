@@ -9,6 +9,6 @@ export class LoginUserDto {
 
   @IsString()
   @IsNotEmpty()
-  @ApiProperty({ example: "0c7045ec9abc578394af1898" })
+  @ApiProperty({ example: "dc27ed128c2a755db896a663" })
   readonly password: string;
 }

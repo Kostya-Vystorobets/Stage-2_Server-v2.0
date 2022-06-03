@@ -43,5 +43,5 @@ export class EmployeeEntity {
     () => DepartmentEntity,
     (department: DepartmentEntity) => department.employees
   )
-  department: DepartmentEntity;
+  department: Promise<DepartmentEntity>;
 }

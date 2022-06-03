@@ -24,7 +24,7 @@ export class UserEntity {
   userName: string;
 
   @ApiProperty({
-    example: "0c7045ec9abc578394af1898",
+    example: "dc27ed128c2a755db896a6638",
   })
   @Column({ select: false })
   password: string;

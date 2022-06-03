@@ -5,6 +5,8 @@ config.yaml
 ormconfig.ts
 
 
+
+/src/employee/decorators
 /dist
 /node_modules
 /src/app.service.ts
