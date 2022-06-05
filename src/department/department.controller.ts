@@ -118,7 +118,7 @@ export class DepartmentController {
   @ApiCookieAuth()
   @ApiOkResponse({ description: "OK" })
   @ApiUnauthorizedResponse({ description: "Not authorized" })
-  @ApiNotFoundResponse({
+  @ApiBadRequestResponse({
     description:
       "Unable to delete a department. The department contains employees.",
   })

@@ -8,6 +8,7 @@ ormconfig.ts
 
 /src/employee/decorators
 /dist
+/pgdata
 /node_modules
 /src/app.service.ts
 /src/ormconfig.ts

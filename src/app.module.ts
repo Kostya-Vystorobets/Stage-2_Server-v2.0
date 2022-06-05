@@ -3,17 +3,30 @@ import { DepartmentModule } from "./department/department.module";
 import { UserModule } from "./user/user.module";
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import ormconfig from "./ormconfig";
-import { ConfigModule } from "@nestjs/config";
+import { ConfigModule, ConfigService } from "@nestjs/config";
 import configuration from "./configuration";
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true,
       load: [configuration],
+      isGlobal: true,
     }),
-    TypeOrmModule.forRoot(ormconfig),
+    TypeOrmModule.forRootAsync({
+      useFactory: async (configService: ConfigService) => ({
+        type: "postgres",
+        host: configService.get<string>("db.postgres.host"),
+        port: configService.get<number>("db.postgres.port"),
+        username: configService.get<string>("db.postgres.username"),
+        password: configService.get<string>("db.postgres.password"),
+        database: configService.get<string>("db.postgres.database"),
+        entities: [__dirname + "/**/*.entity{.ts,.js}"],
+        synchronize: false,
+        migrations: [__dirname + "/migrations/**/*{.ts,.js}"],
+        cli: { migrationsDir: "src/migrations" },
+      }),
+      inject: [ConfigService],
+    }),
     UserModule,
     DepartmentModule,
     EmployeeModule,

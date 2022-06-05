@@ -89,7 +89,10 @@ export class DepartmentSevice {
     try {
       return await this.departmentRepository.delete({ id });
     } catch (error) {
-      throw new HttpException(`${error.detail}`, HttpStatus.NOT_FOUND);
+      throw new HttpException(
+        "Unable to delete a department. The department contains employees.",
+        HttpStatus.BAD_REQUEST
+      );
     }
   }
 }

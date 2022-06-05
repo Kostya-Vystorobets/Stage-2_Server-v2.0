@@ -1,0 +1,26 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres
+    # container_name: postgresContainer
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: postgres
+      # - POSTGRES_ROOT_PASSWORD=admin
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+  app:
+    build: .
+    depends_on:
+      - db
+    restart: always
+    ports:
+      - 3000:3000
+
+volumes:
+  db_data:
