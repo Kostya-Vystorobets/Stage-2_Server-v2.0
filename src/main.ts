@@ -8,13 +8,14 @@ import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
   const configService = app.get(ConfigService);
+  const PORT = configService.get<string>("http.port") || 3000;
   app.use(
     session({
       secret: configService.get<string>("session.secret"),
       resave: false,
       saveUninitialized: false,
       cookie: {
-        maxAge: configService.get<number>("session.max-age"),
+        maxAge: configService.get<number>("session.cookie.max-age"),
       },
     })
   );
@@ -30,6 +31,6 @@ async function bootstrap() {
   SwaggerModule.setup("api/v2", app, document);
 
   await seedDatabase();
-  await app.listen(configService.get<string>("port"));
+  await app.listen(PORT, () => console.log(`Server started on port = ${PORT}`));
 }
 bootstrap();

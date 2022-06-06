@@ -11,6 +11,15 @@ import {
   UsePipes,
   ValidationPipe,
 } from "@nestjs/common";
+import {
+  SwaggerDepartmentApiTags,
+  SwaggerDepartmentCreate,
+  SwaggerDepartmentCreateEmployeeInDepartment,
+  SwaggerDepartmentDeleteById,
+  SwaggerDepartmentGetAll,
+  SwaggerDepartmentGetById,
+  SwaggerDepartmentUpdeteById,
+} from "./decorators/department.decorators";
 import { CreateEmployeeDto } from "src/employee/dto/createEmployee.dto";
 import { AuthGuard } from "src/user/guards/auth.guard";
 import { DeleteResult } from "typeorm";
@@ -21,29 +30,13 @@ import { UpdateDepartmentDto } from "./dto/updateDepartment.dto";
 import { DepartmentsOptionInterface } from "./types/departmentsOptions.interface";
 import { DepartmentsResponseInterface } from "./types/departmentsResponse.interface";
 import { EmployeeEntity } from "src/employee/employee.entity";
-import {
-  ApiBadRequestResponse,
-  ApiBody,
-  ApiCookieAuth,
-  ApiNotFoundResponse,
-  ApiOkResponse,
-  ApiOperation,
-  ApiTags,
-  ApiUnauthorizedResponse,
-} from "@nestjs/swagger";
 
-@ApiTags("Department")
+@SwaggerDepartmentApiTags()
 @Controller("/api/v2/departments")
 export class DepartmentController {
   constructor(private readonly departmentServise: DepartmentSevice) {}
   @Get()
-  @ApiOperation({ summary: "Get all department" })
-  @ApiCookieAuth()
-  @ApiOkResponse({ type: DepartmentEntity })
-  @ApiUnauthorizedResponse({ description: "Not authorized" })
-  @ApiNotFoundResponse({
-    description: "The department with this ID was not found.",
-  })
+  @SwaggerDepartmentGetAll()
   @UseGuards(AuthGuard)
   async getAll(
     @Query() query: DepartmentsOptionInterface
@@ -51,25 +44,13 @@ export class DepartmentController {
     return this.departmentServise.getAll(query);
   }
   @Get(":id")
-  @ApiOperation({ summary: "Get department by id" })
-  @ApiCookieAuth()
-  @ApiUnauthorizedResponse({ description: "Not authorized" })
-  @ApiOkResponse({ type: DepartmentEntity })
-  @ApiNotFoundResponse({
-    description: "The department with this ID was not found.",
-  })
+  @SwaggerDepartmentGetById()
   @UseGuards(AuthGuard)
   async getById(@Param("id") id: number): Promise<DepartmentEntity> {
     return this.departmentServise.getById(id);
   }
   @Post()
-  @ApiOperation({ summary: "Create department" })
-  @ApiCookieAuth()
-  @ApiOkResponse({ type: DepartmentEntity })
-  @ApiUnauthorizedResponse({ description: "Not authorized" })
-  @ApiBadRequestResponse({
-    description: "The department with this Name already exists.",
-  })
+  @SwaggerDepartmentCreate()
   @UseGuards(AuthGuard)
   @UsePipes(new ValidationPipe())
   async create(
@@ -78,14 +59,7 @@ export class DepartmentController {
     return this.departmentServise.createDepartment(createDepartmentDto);
   }
   @Post(":id/employees")
-  @ApiOperation({ summary: "Create employee in department by id" })
-  @ApiCookieAuth()
-  @ApiBody({ type: CreateEmployeeDto })
-  @ApiOkResponse({ type: EmployeeEntity })
-  @ApiUnauthorizedResponse({ description: "Not authorized" })
-  @ApiBadRequestResponse({
-    description: "The department with this ID was not found.",
-  })
+  @SwaggerDepartmentCreateEmployeeInDepartment()
   @UseGuards(AuthGuard)
   @UsePipes(new ValidationPipe())
   async createEmployeeInDepartment(
@@ -98,13 +72,7 @@ export class DepartmentController {
     );
   }
   @Patch(":id")
-  @ApiOperation({ summary: "Change department by id" })
-  @ApiCookieAuth()
-  @ApiOkResponse({ type: DepartmentEntity })
-  @ApiUnauthorizedResponse({ description: "Not authorized" })
-  @ApiNotFoundResponse({
-    description: "The department with this ID was not found.",
-  })
+  @SwaggerDepartmentUpdeteById()
   @UseGuards(AuthGuard)
   @UsePipes(new ValidationPipe())
   async updeteById(
@@ -114,17 +82,7 @@ export class DepartmentController {
     return this.departmentServise.updeteById(id, updateDepartmentDto);
   }
   @Delete(":id")
-  @ApiOperation({ summary: "Delete department by id" })
-  @ApiCookieAuth()
-  @ApiOkResponse({ description: "OK" })
-  @ApiUnauthorizedResponse({ description: "Not authorized" })
-  @ApiNotFoundResponse({
-    description:
-      "Unable to delete a department. The department contains employees.",
-  })
-  @ApiNotFoundResponse({
-    description: "The department with this ID was not found.",
-  })
+  @SwaggerDepartmentDeleteById()
   @UseGuards(AuthGuard)
   async deleteById(@Param("id") id: number): Promise<DeleteResult> {
     return this.departmentServise.deleteById(id);
