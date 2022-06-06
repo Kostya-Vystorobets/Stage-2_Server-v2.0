@@ -6,6 +6,7 @@ ormconfig.ts
 
 
 
+
 /src/employee/decorators
 /dist
 /pgdata

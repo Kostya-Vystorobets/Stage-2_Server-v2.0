@@ -15,13 +15,14 @@ import configuration from "./configuration";
     TypeOrmModule.forRootAsync({
       useFactory: async (configService: ConfigService) => ({
         type: "postgres",
-        host: configService.get<string>("db.postgres.host"),
-        port: configService.get<number>("db.postgres.port"),
+        host: configService.get<string>("http.host"),
+        port: Number(configService.get<string>("db.postgres.port")),
         username: configService.get<string>("db.postgres.username"),
         password: configService.get<string>("db.postgres.password"),
         database: configService.get<string>("db.postgres.database"),
         entities: [__dirname + "/**/*.entity{.ts,.js}"],
-        synchronize: false,
+        autoLoadEntities: true,
+        synchronize: true,
         migrations: [__dirname + "/migrations/**/*{.ts,.js}"],
         cli: { migrationsDir: "src/migrations" },
       }),

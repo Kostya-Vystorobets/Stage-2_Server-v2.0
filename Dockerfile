@@ -1,12 +1,14 @@
-FROM node
+FROM node:16.13-alpine
 
 WORKDIR /app_docker
 
-# COPY package.json/app_docker
-COPY . .
+COPY package*.json /app_docker/
 
 RUN npm install
 
-# EXPOSE 3000
+COPY . .
 
-CMD npm run start
+COPY ./dist ./dist
+COPY .env .
+
+CMD ["npm", "run", "start:dev"]
