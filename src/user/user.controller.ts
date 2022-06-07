@@ -10,36 +10,25 @@ import {
   HttpCode,
   HttpStatus,
 } from "@nestjs/common";
+import {
+  SwaggerUserApiTags,
+  SwaggerUserCreate,
+  SwaggerUserLogin,
+  SwaggerUserLogout,
+} from "./decorators/user.decorators";
 import { CreateUserDto } from "./dto/createUser.dto";
 import { LoginUserDto } from "./dto/login.dto";
 import { UserEntity } from "./user.entity";
 import { UserSevice } from "./user.service";
 import { Session as SessionData } from "express-session";
 import { AuthGuard } from "./guards/auth.guard";
-import {
-  ApiBadRequestResponse,
-  ApiBody,
-  ApiCookieAuth,
-  ApiOkResponse,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-  ApiUnauthorizedResponse,
-} from "@nestjs/swagger";
 
-@ApiTags("User")
+@SwaggerUserApiTags()
 @Controller("/api/v2/users")
 export class UserController {
   constructor(private readonly userServise: UserSevice) {}
   @Post("/login")
-  @ApiOperation({ summary: "Logs user into the system" })
-  @ApiResponse({
-    status: 201,
-    description: "User Login",
-    type: UserEntity,
-  })
-  @ApiBadRequestResponse({ description: "User not found" })
-  @ApiBody({ type: LoginUserDto })
+  @SwaggerUserLogin()
   @UsePipes(new ValidationPipe())
   async login(
     @Session() session: SessionData,
@@ -51,10 +40,7 @@ export class UserController {
   }
 
   @Get("logout")
-  @ApiOperation({ summary: "Logging out of the system" })
-  @ApiCookieAuth()
-  @ApiOkResponse({ description: "OK" })
-  @ApiUnauthorizedResponse({ description: "Not authorized" })
+  @SwaggerUserLogout()
   @UseGuards(AuthGuard)
   async logout(@Session() session: SessionData): Promise<void> {
     return new Promise<void>((resolve, reject) => {
@@ -66,17 +52,8 @@ export class UserController {
   }
 
   @Post("/")
-  @ApiOperation({ summary: "Create user" })
-  @ApiCookieAuth()
-  @ApiBody({ type: LoginUserDto })
-  @ApiResponse({
-    status: 201,
-    description: "User Login",
-    type: UserEntity,
-  })
-  @ApiUnauthorizedResponse({ description: "Not authorized" })
-  @ApiBadRequestResponse()
   @UseGuards(AuthGuard)
+  @SwaggerUserCreate()
   @UsePipes(new ValidationPipe())
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() createUserDto: CreateUserDto): Promise<UserEntity> {
